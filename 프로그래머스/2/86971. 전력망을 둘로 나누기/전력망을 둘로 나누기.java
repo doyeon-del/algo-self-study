@@ -2,61 +2,64 @@ import java.util.*;
 
 class Solution {
     public int solution(int n, int[][] wires) {
-        int answer = 10000;
+        int answer = 1000;
+       
         
-        for (int cut = 0; cut<wires.length; cut++){ // 어떤 전력망을 끊을 것인지 고르기? 
-                    
-            List<List<Integer>> adj = new ArrayList<>();
+        //-------------------
+        // 모든 wire에 대해서 하나하나 끊어 보면서 확인하기
+        for (int d=0 ; d<wires.length; d++){
+            int[] dis = wires[d]; // 이번 턴에 무시할 wire 정해두기 
             
-            for (int i=0; i<=n; i++){
-                adj.add(new ArrayList<>());
+            
+            List<List<Integer>> adj = new ArrayList<>();
+            for (int a=0; a<=n; a++){
+                adj.add(new ArrayList<>()); // 새로운 리스트 더해주기 
             }
+        
+            for (int w=0; w<wires.length; w++){ 
+                if (w==d) continue; // 만약 끊을 전선이라면, 아래 단계 건너뛰기
+                
+                int[] wire = wires[w];
+                int w1 = wire[0];
+                int w2 = wire[1]; 
 
-            for (int w = 0; w<wires.length ; w++){
-                if (cut==w) continue; // 해당 부분은 표시안해주기 
-                    
-                int w1 = wires[w][0];
-                int w2 = wires[w][1];
                 adj.get(w1).add(w2);
                 adj.get(w2).add(w1);
-            } 
-        
-            int c = connect(1,adj,n);
-            int notC = n - c; 
+            }
             
-            answer = Math.min(answer, Math.abs(c - notC));
-      
+            int currCon = conCheck(1, adj, n);
+            int other = n - currCon;
+            
+            answer = Math.min(Math.abs(currCon - other), answer);
+            
         }
         
         return answer;
     }
     
-    public int connect(int start, List<List<Integer>> adj, int n){
-        
-        int count = 1;
-        Deque<Integer> q = new ArrayDeque<>();
+    public int conCheck(int start, List<List<Integer>> adj, int n){
+        int connect = 1; // 최소한 start 지점은 포함된거니까 
         boolean[] visited = new boolean[n+1];
         
-        q.add(start);
+        Deque<Integer> q = new ArrayDeque<>();
         visited[start] = true;
+        q.add(start);
         
         while(!q.isEmpty()){
             int temp = q.poll();
             
-            for (int num=2; num<visited.length; num++){
-                if (adj.get(temp).contains(num) && !visited[num]){
-                    visited[num] = true;
-                    count++;
-                    q.add(num);
+            for (int i=1; i<=n; i++){
+                if (!visited[i] && adj.get(temp).contains(i)){
+                    connect++;
+                    visited[i] = true;
+                    q.add(i);
                 }
             }
-            
-            
         }
         
-        return count;
+        return connect;
         
-            
-            
+        
+        
     }
 }
