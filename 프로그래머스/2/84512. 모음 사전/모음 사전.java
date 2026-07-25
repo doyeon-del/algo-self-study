@@ -1,25 +1,31 @@
 import java.util.*;
+
 class Solution {
-    List<String> dic = new ArrayList<>();
-    static char[] vowels = { 'A', 'E', 'I', 'O', 'U'};
-    
+    static String[] vowels = {"A","E","I","O","U"};
     public int solution(String word) {
         
-        makeDic("");
         
-        return dic.indexOf(word) + 1;
+        List<String> dic = new ArrayList<>();
+        boolean[] visited = new boolean[5];
+        makeDic("", dic);
+        
+        int answer = dic.indexOf(word);
+        return answer;
     }
     
-    public void makeDic(String current){
+    public void makeDic(String current, List<String> dic){
         
-        if(!current.equals("")){
+        if (!dic.contains(current)){
             dic.add(current);
         }
         
-        if(current.length() == 5) return;
-        
-        for (int i=0; i<vowels.length; i++){
-            makeDic(current + vowels[i]);
+        for (int i=0; i<5; i++){
+             String newWord = current + vowels[i];
+            if (newWord.length() < 6){
+                
+                makeDic(newWord, dic);
+            }
+            
         }
         
     }
