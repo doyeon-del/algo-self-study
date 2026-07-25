@@ -1,42 +1,37 @@
 import java.util.*;
+
 class Solution {
-    static int answer;
-    
     public int solution(int n, int[][] computers) {
-        answer = 0;
-        
-        // 인접 리스트 만들 필요도 없이 인접행렬로 이미 다 표시되어 있음. 
         boolean[] visited = new boolean[computers.length];
-        
-        for (int i=0; i<computers.length; i++){
-            if (!visited[i]){
-                
-                bfs(i, visited, computers);
+        int answer = 0;
+        for (int c=0; c<computers.length; c++){
+            
+            if(!visited[c]){
+                visited[c] = true;
                 answer++;
-            }
-        }
-        
-        return answer;
-    }
-    
-    public void bfs(int start, boolean[] visited, int[][] computers){
-        
-        visited[start] = true;
-        Deque<Integer> queue = new ArrayDeque<>();
-        queue.add(start); 
-        
-        while(!queue.isEmpty()){
-            int cur = queue.poll();
-            for (int i=0; i<computers[cur].length; i++){
-                if (computers[cur][i]==1 && !visited[i]){
-                    visited[i] = true;
-                    queue.add(i);
-                    
-                }
+                findCon(c, computers, visited);
             }
             
         }
         
+        
+        return answer;
+    }
+    
+    public void findCon(int start, int[][] computers, boolean[] visited) {
+        Deque<Integer> q = new ArrayDeque<>();
+        q.add(start);
+        
+        while(!q.isEmpty()){
+            int cur = q.poll();
+            
+            for (int i=0; i<computers.length; i++){
+                if (!visited[i] && computers[cur][i] == 1){
+                    visited[i] = true;
+                    q.add(i);
+                }
+            }
+        }
         
     }
 }
